@@ -1,0 +1,22 @@
+{
+  "name": "collision_detecter",
+  "version": "1.0.0",
+  "description": "Demonstrates collision detection.",
+  "main": "index.js",
+  "dependencies": {
+    "browserify": "^14.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^6.0.77",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-browser": "^3.0.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^3.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
