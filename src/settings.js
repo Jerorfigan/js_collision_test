@@ -17,6 +17,13 @@ Settings.prototype.init = function(){
 		width: 800,
 		height: 600
 	};
+
+	// Keypress
+	this.rotateCounterClockwiseKey = "z";
+	this.rotateClockwiseKey = "x";
+
+	// Rotation
+	this.deltaRadOnRotate = Math.PI/6;
 };
 
 module.exports = new Settings();

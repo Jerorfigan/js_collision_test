@@ -31,5 +31,7 @@ var evtMgr = new EventManager;
 evtMgr.create("PhysRectStartedBeingDragged");
 evtMgr.create("PhysRectBeingDragged");
 evtMgr.create("PhysRectStoppedBeingDragged");
+evtMgr.create("PhysRectRotatedClockwise");
+evtMgr.create("PhysRectRotatedCounterClockwise");
 
 module.exports = evtMgr;

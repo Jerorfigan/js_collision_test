@@ -7,6 +7,8 @@ var Vector2D = require("../math/Vector2D.js");
 var PhysRectFX = function(physRect, app){
 	this.fxb = new FXBasics(physRect.b.id);
 	this.fxb.interaction.dragable = true;
+	this.fxb.interaction.respondsToKeypress = true;
+
 	this.app = app;
 	this.physRect = physRect;
 	this.graphic = null;
@@ -15,6 +17,27 @@ var PhysRectFX = function(physRect, app){
 
 	_buildGraphics.call(this);
 };
+
+PhysRectFX.prototype.update = function(physRect){
+	// Update position
+	var renderPos = fxutils.logicV2renderV(this.physRect.pos);
+	this.graphic.x = renderPos.x;
+	this.graphic.y = renderPos.y;
+
+	// Update rotation
+	this.graphic.rotation = physRect.rotation;
+
+	// Update z-index if it has changed
+	if(this.zIndex != physRect.zIndex){
+		var oldZIndexContainer = this.app.stage.getChildAt(this.zIndex);
+		oldZIndexContainer.removeChild(this.graphic);
+		var newZIndexContainer = this.app.stage.getChildAt(physRect.zIndex);
+		newZIndexContainer.addChild(this.graphic);
+		this.zIndex = physRect.zIndex;
+	}
+};
+
+// EVENTS //
 
 PhysRectFX.prototype.onDrag = function(e){
 	var renderDragPos = 
@@ -29,19 +52,13 @@ PhysRectFX.prototype.onDrag = function(e){
 	}
 };
 
-PhysRectFX.prototype.update = function(physRect){
-	// Update position
-	var renderPos = fxutils.logicV2renderV(this.physRect.pos);
-	this.graphic.x = renderPos.x;
-	this.graphic.y = renderPos.y;
-
-	// Update z-index if it has changed
-	if(this.zIndex != physRect.zIndex){
-		var oldZIndexContainer = this.app.stage.getChildAt(this.zIndex);
-		oldZIndexContainer.removeChild(this.graphic);
-		var newZIndexContainer = this.app.stage.getChildAt(physRect.zIndex);
-		newZIndexContainer.addChild(this.graphic);
-		this.zIndex = physRect.zIndex;
+PhysRectFX.prototype.onKeypress = function(e){
+	if(this.isBeingDragged){
+		if(String.fromCharCode(e.charCode).toLowerCase() == settings.rotateCounterClockwiseKey){
+			evtMgr.fire("PhysRectRotatedCounterClockwise", {id: this.fxb.id });
+		}else if(String.fromCharCode(e.charCode).toLowerCase() == settings.rotateClockwiseKey){
+			evtMgr.fire("PhysRectRotatedClockwise", {id: this.fxb.id });
+		}
 	}
 };
 
@@ -61,6 +78,7 @@ function _buildGraphics(){
 	var renderPos = fxutils.logicV2renderV(this.physRect.pos);
 	this.graphic.x = renderPos.x;
 	this.graphic.y = renderPos.y;
+	this.graphic.rotation = this.physRect.rotation;
 	this.graphic.endFill();
 
 	if(this.physRect.interactive){

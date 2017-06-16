@@ -54,4 +54,11 @@ function initEvents(){
 			}
 		}, thisObj.actors);
 	};
+	window.onkeypress = function(e){
+		R.forEach(function(actor){
+			if(actor.fxb.interaction.respondsToKeypress){
+				actor.onKeypress(e);
+			}
+		}, thisObj.actors);
+	};
 }
