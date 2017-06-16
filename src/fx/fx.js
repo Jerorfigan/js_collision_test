@@ -10,16 +10,8 @@ var FX = function(){
 	// Add render target to DOM
 	document.body.appendChild(this.app.view);
 
-	// EVENTS
-
-	var thisObj = this;
-	this.app.view.onpointermove = function(e){
-		R.forEach(function(actor){
-			if(actor.fxb.interaction.dragable){
-				actor.onDrag(e);
-			}
-		}, thisObj.actors);
-	};
+	initStage.call(this);
+	initEvents.call(this);
 };
 
 FX.prototype.draw = function(gameState){
@@ -43,3 +35,23 @@ FX.prototype.draw = function(gameState){
 };
 
 module.exports = FX;
+
+// PRIVATE FUNCTIONS //
+
+function initStage(){
+	// Initialize z-index containers
+	for(var zIndex = 0; zIndex < settings.zBufferCnt; zIndex++){
+		this.app.stage.addChild(new PIXI.Container());
+	}
+}
+
+function initEvents(){
+	var thisObj = this;
+	this.app.view.onpointermove = function(e){
+		R.forEach(function(actor){
+			if(actor.fxb.interaction.dragable){
+				actor.onDrag(e);
+			}
+		}, thisObj.actors);
+	};
+}

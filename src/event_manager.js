@@ -28,6 +28,8 @@ EventManager.prototype.fire = function(eventName, data){
 
 var evtMgr = new EventManager;
 
-evtMgr.create("PhysRectDragged");
+evtMgr.create("PhysRectStartedBeingDragged");
+evtMgr.create("PhysRectBeingDragged");
+evtMgr.create("PhysRectStoppedBeingDragged");
 
 module.exports = evtMgr;

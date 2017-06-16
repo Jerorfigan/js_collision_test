@@ -11,6 +11,7 @@ var PhysRectFX = function(physRect, app){
 	this.physRect = physRect;
 	this.graphic = null;
 	this.isBeingDragged = false;
+	this.zIndex = physRect.zIndex;
 
 	_buildGraphics.call(this);
 };
@@ -24,7 +25,7 @@ PhysRectFX.prototype.onDrag = function(e){
 		logicDragPos = fxutils.renderV2logicV(renderDragPos);    
 
 	if(this.isBeingDragged){
-		evtMgr.fire("PhysRectDragged", {id: this.fxb.id, pos: logicDragPos});
+		evtMgr.fire("PhysRectBeingDragged", {id: this.fxb.id, pos: logicDragPos});
 	}
 };
 
@@ -33,6 +34,15 @@ PhysRectFX.prototype.update = function(physRect){
 	var renderPos = fxutils.logicV2renderV(this.physRect.pos);
 	this.graphic.x = renderPos.x;
 	this.graphic.y = renderPos.y;
+
+	// Update z-index if it has changed
+	if(this.zIndex != physRect.zIndex){
+		var oldZIndexContainer = this.app.stage.getChildAt(this.zIndex);
+		oldZIndexContainer.removeChild(this.graphic);
+		var newZIndexContainer = this.app.stage.getChildAt(physRect.zIndex);
+		newZIndexContainer.addChild(this.graphic);
+		this.zIndex = physRect.zIndex;
+	}
 };
 
 module.exports = PhysRectFX;
@@ -58,14 +68,15 @@ function _buildGraphics(){
 		this.graphic.interactive = true;
 		var thisObj = this;
 		this.graphic.on("pointerdown", function(e){
-			console.log(e.target.interactionID + " is being dragged.");
 			thisObj.isBeingDragged = true;
+			evtMgr.fire("PhysRectStartedBeingDragged", {id: thisObj.fxb.id });
 		});
 		this.graphic.on("pointerup", function(e){
-			console.log(e.target.interactionID + " has stopped being dragged.");
 			thisObj.isBeingDragged = false;
+			evtMgr.fire("PhysRectStoppedBeingDragged", {id: thisObj.fxb.id });
 		});
 	}
 
-	this.app.stage.addChild(this.graphic);
+	var zIndexContainer = this.app.stage.getChildAt(this.physRect.zIndex);
+	zIndexContainer.addChild(this.graphic);
 }

@@ -8,6 +8,7 @@ Settings.prototype.init = function(){
 	this.framePeriod = 1/this.fps;
 	
 	// Rendering
+	this.zBufferCnt = 2;
 	this.logicSpace = {
 		width: 1000,
 		height: 1000
