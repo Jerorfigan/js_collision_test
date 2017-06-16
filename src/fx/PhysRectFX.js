@@ -1,9 +1,11 @@
 var FXBasics = require("./fx_basics.js");
 var fxutils = require("./fx_utils.js");
 var settings = require("../settings.js");
+var evtMgr = require("../event_manager.js");
+var Vector2D = require("../math/Vector2D.js");
 
 var PhysRectFX = function(physRect, app){
-	this.fxb = new FXBasics();
+	this.fxb = new FXBasics(physRect.b.id);
 	this.fxb.interaction.dragable = true;
 	this.app = app;
 	this.physRect = physRect;
@@ -14,37 +16,31 @@ var PhysRectFX = function(physRect, app){
 };
 
 PhysRectFX.prototype.onDrag = function(e){
-	var x = e.clientX,
-		y = e.clientY,
-		canvasLeftBoundaryX = this.app.view.getBoundingClientRect().left,
-		canvasTopBoundaryY = this.app.view.getBoundingClientRect().top;
+	var renderDragPos = 
+		new Vector2D(
+			e.clientX - this.app.view.getBoundingClientRect().left, 
+			e.clientY - this.app.view.getBoundingClientRect().top
+		),
+		logicDragPos = fxutils.renderV2logicV(renderDragPos);    
 
 	if(this.isBeingDragged){
-		this.app.stage.removeChild(this.graphic);
-		this.app.stage.addChild(this.graphic);
-		// TODO: consider revising this, I think it should be emitting event to logical object to have it update its
-		// logical position first and then have that change trickle down to graphics, rather than graphics superceding
-		// logic.
-		this.graphic.x = x - canvasLeftBoundaryX;
-		this.graphic.y = y - canvasTopBoundaryY;
-		this.physRect.x = this.graphic.x * settings.logicSpace.width / settings.renderSpace.width;
-		this.physRect.y = this.graphic.y * settings.logicSpace.height / settings.renderSpace.height;
+		evtMgr.fire("PhysRectDragged", {id: this.fxb.id, pos: logicDragPos});
 	}
 };
 
 PhysRectFX.prototype.update = function(physRect){
 	// Update position
-	/*var renderPos = fxutils.logicV2renderV(this.physRect.pos);
+	var renderPos = fxutils.logicV2renderV(this.physRect.pos);
 	this.graphic.x = renderPos.x;
-	this.graphic.y = renderPos.y;*/
+	this.graphic.y = renderPos.y;
 };
 
 module.exports = PhysRectFX;
 
 function _buildGraphics(){
 	var id = this.physRect.b.id;
-		w = fxutils.logicW2renderW(this.physRect.width),
-		h = fxutils.logicH2renderH(this.physRect.height);
+		w = fxutils.logicX2renderX(this.physRect.width),
+		h = fxutils.logicY2renderY(this.physRect.height);
 
 	this.graphic = new PIXI.Graphics();
 
