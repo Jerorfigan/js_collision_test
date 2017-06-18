@@ -2,6 +2,7 @@ var Basics = require("./basics.js");
 var Vector2D = require("./math/vector2d.js");
 var evtMgr = require("./event_manager.js");
 var settings = require("./settings.js");
+var R = require("../lib/ramda.min.js");
 
 var PhysRect = function(id, pos, width, height, color){
 	this.b = new Basics(id);
@@ -29,6 +30,18 @@ PhysRect.prototype.update = function(){
 
 PhysRect.prototype.getRenderState = function(){
 	return this;
+};
+
+PhysRect.prototype.getVerts = function(){
+	var offsets = [
+		new Vector2D(-this.width/2, -this.height/2),
+		new Vector2D(this.width/2, -this.height/2),
+		new Vector2D(this.width/2, this.height/2),
+		new Vector2D(-this.width/2, this.height/2)
+	];
+	
+	thisObj = this;
+	return R.map(function(offset){ return offset.rotate(thisObj.rotation).add(thisObj.pos); }, offsets);
 };
 
 module.exports = PhysRect;

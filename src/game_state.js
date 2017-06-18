@@ -2,6 +2,7 @@ var R = require("../lib/ramda.min.js");
 
 var GameState = function(){
 	this.objs = [];
+	this.objsByKey = {};
 };
 
 // ENUMS
@@ -12,7 +13,13 @@ GameState.prototype.OBJ_TYPE = {
 
 GameState.prototype.addObj = function(obj){
 	this.objs.push(obj);
+	this.objsByKey[obj.b.id] = obj;
 };
+
+GameState.prototype.getObjByKey = function(key){
+	if(!this.objsByKey[key]) throw "No object found with key specified";
+	return this.objsByKey[key];
+}
 
 GameState.prototype.getObjOfType = function(type){
 	return R.filter(function(obj){

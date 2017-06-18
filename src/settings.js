@@ -14,8 +14,8 @@ Settings.prototype.init = function(){
 		height: 1000
 	};
 	this.renderSpace = {
-		width: 800,
-		height: 600
+		width: 700,
+		height: 700
 	};
 
 	// Keypress

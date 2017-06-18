@@ -12,6 +12,7 @@ var PhysRectFX = function(physRect, app){
 	this.app = app;
 	this.physRect = physRect;
 	this.graphic = null;
+	this.color = null;
 	this.isBeingDragged = false;
 	this.zIndex = physRect.zIndex;
 
@@ -19,21 +20,26 @@ var PhysRectFX = function(physRect, app){
 };
 
 PhysRectFX.prototype.update = function(physRect){
-	// Update position
-	var renderPos = fxutils.logicV2renderV(this.physRect.pos);
-	this.graphic.x = renderPos.x;
-	this.graphic.y = renderPos.y;
+	// If we need to update color, we need to redraw everything
+	if(this.color != physRect.color){
+		_buildGraphics.call(this);
+	}else{
+		// Update position
+		var renderPos = fxutils.logicV2renderV(this.physRect.pos);
+		this.graphic.x = renderPos.x;
+		this.graphic.y = renderPos.y;
 
-	// Update rotation
-	this.graphic.rotation = physRect.rotation;
+		// Update rotation
+		this.graphic.rotation = physRect.rotation;
 
-	// Update z-index if it has changed
-	if(this.zIndex != physRect.zIndex){
-		var oldZIndexContainer = this.app.stage.getChildAt(this.zIndex);
-		oldZIndexContainer.removeChild(this.graphic);
-		var newZIndexContainer = this.app.stage.getChildAt(physRect.zIndex);
-		newZIndexContainer.addChild(this.graphic);
-		this.zIndex = physRect.zIndex;
+		// Update z-index if it has changed
+		if(this.zIndex != physRect.zIndex){
+			var oldZIndexContainer = this.app.stage.getChildAt(this.zIndex);
+			oldZIndexContainer.removeChild(this.graphic);
+			var newZIndexContainer = this.app.stage.getChildAt(physRect.zIndex);
+			newZIndexContainer.addChild(this.graphic);
+			this.zIndex = physRect.zIndex;
+		}
 	}
 };
 
@@ -65,6 +71,11 @@ PhysRectFX.prototype.onKeypress = function(e){
 module.exports = PhysRectFX;
 
 function _buildGraphics(){
+	if(this.graphic){
+		var zIndexContainer = this.app.stage.getChildAt(this.physRect.zIndex);
+		zIndexContainer.removeChild(this.graphic);
+	}
+
 	var id = this.physRect.b.id;
 		w = fxutils.logicX2renderX(this.physRect.width),
 		h = fxutils.logicY2renderY(this.physRect.height);
@@ -72,6 +83,7 @@ function _buildGraphics(){
 	this.graphic = new PIXI.Graphics();
 
 	this.graphic.beginFill(this.physRect.color);
+	this.color = this.physRect.color;
 	this.graphic.drawRect(0, 0, w, h);
 	this.graphic.pivot._x = w/2;
 	this.graphic.pivot._y = h/2;
