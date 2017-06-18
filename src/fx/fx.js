@@ -39,6 +39,10 @@ module.exports = FX;
 // PRIVATE FUNCTIONS //
 
 function initStage(){
+	// Initialize scale
+	this.app.stage.scale.x = settings.renderSpace.width/settings.logicSpace.width;
+	this.app.stage.scale.y = settings.renderSpace.height/settings.logicSpace.height;
+
 	// Initialize z-index containers
 	for(var zIndex = 0; zIndex < settings.zBufferCnt; zIndex++){
 		this.app.stage.addChild(new PIXI.Container());

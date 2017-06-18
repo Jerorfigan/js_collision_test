@@ -25,9 +25,8 @@ PhysRectFX.prototype.update = function(physRect){
 		_buildGraphics.call(this);
 	}else{
 		// Update position
-		var renderPos = fxutils.logicV2renderV(this.physRect.pos);
-		this.graphic.x = renderPos.x;
-		this.graphic.y = renderPos.y;
+		this.graphic.x = this.physRect.pos.x;
+		this.graphic.y = this.physRect.pos.y;
 
 		// Update rotation
 		this.graphic.rotation = physRect.rotation;
@@ -76,22 +75,21 @@ function _buildGraphics(){
 		zIndexContainer.removeChild(this.graphic);
 	}
 
-	var id = this.physRect.b.id;
-		w = fxutils.logicX2renderX(this.physRect.width),
-		h = fxutils.logicY2renderY(this.physRect.height);
+	var id = this.physRect.b.id,
+		w = this.physRect.width,
+		h = this.physRect.height;
 
 	this.graphic = new PIXI.Graphics();
 
-	this.graphic.beginFill(this.physRect.color);
 	this.color = this.physRect.color;
+	this.graphic.beginFill(this.color);
 	this.graphic.drawRect(0, 0, w, h);
+	this.graphic.endFill();
 	this.graphic.pivot._x = w/2;
 	this.graphic.pivot._y = h/2;
-	var renderPos = fxutils.logicV2renderV(this.physRect.pos);
-	this.graphic.x = renderPos.x;
-	this.graphic.y = renderPos.y;
 	this.graphic.rotation = this.physRect.rotation;
-	this.graphic.endFill();
+	this.graphic.x = this.physRect.pos.x;
+	this.graphic.y = this.physRect.pos.y;
 
 	if(this.physRect.interactive){
 		this.graphic.interactionID = id;
@@ -99,11 +97,11 @@ function _buildGraphics(){
 		var thisObj = this;
 		this.graphic.on("pointerdown", function(e){
 			thisObj.isBeingDragged = true;
-			evtMgr.fire("PhysRectStartedBeingDragged", {id: thisObj.fxb.id });
+			evtMgr.fire("PhysRectStartedBeingDragged", {id: id });
 		});
 		this.graphic.on("pointerup", function(e){
 			thisObj.isBeingDragged = false;
-			evtMgr.fire("PhysRectStoppedBeingDragged", {id: thisObj.fxb.id });
+			evtMgr.fire("PhysRectStoppedBeingDragged", {id: id });
 		});
 	}
 
