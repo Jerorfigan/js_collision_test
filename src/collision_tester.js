@@ -31,7 +31,7 @@ CollisionTester.prototype.update = function(){
 	var rect1 = this.gameState.getObjByKey("rect1"),
 		rect2 = this.gameState.getObjByKey("rect2");
 	if(
-		phys2D.areObjectsColliding(
+		phys2D.arePolygonsColliding(
 			rect1, 
 			rect2
 		)
