@@ -1,6 +1,7 @@
 var R = require("../../lib/ramda.min.js");
 var settings = require("../settings.js");
 var PhysRectFX = require("./PhysRectFX.js"); 
+var PhysEquiTriFX = require("./PhysEquiTriFX.js");
 
 var FX = function(){
 	this.app = new PIXI.Application(settings.renderSpace.width, settings.renderSpace.height, { antialias: true });
@@ -24,6 +25,9 @@ FX.prototype.draw = function(gameState){
 			switch(drawable.constructor.name){
 				case "PhysRect":
 					newActor = new PhysRectFX(drawable, thisObj.app);
+					break;
+				case "PhysEquiTri":
+					newActor = new PhysEquiTriFX(drawable, thisObj.app);
 					break;
 				default:
 					throw "Unknown drawable type";

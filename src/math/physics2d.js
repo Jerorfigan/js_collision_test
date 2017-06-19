@@ -8,8 +8,10 @@ Physics2D.prototype.arePolygonsColliding = function(polygon1, polygon2){
 	
 	function getNormals(verts){
 		var normals = [];
-		for(var i = 0; i < verts.length - 1; i++){
-			normals.push(verts[i].sub(verts[i+1]).rotate(Math.PI/2).normalize());
+		for(var i = 0; i < verts.length; i++){
+			i < verts.length - 1 ? 
+				normals.push(verts[i].sub(verts[i+1]).rotate(Math.PI/2).normalize()) :
+				normals.push(verts[i].sub(verts[0]).rotate(Math.PI/2).normalize());
 		}
 		return normals;
 	}
