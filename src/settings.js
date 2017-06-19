@@ -23,7 +23,7 @@ Settings.prototype.init = function(){
 	this.rotateClockwiseKey = "x";
 
 	// Rotation
-	this.deltaRadOnRotate = Math.PI/6;
+	this.deltaRadOnRotate = Math.PI/18;
 };
 
 module.exports = new Settings();
